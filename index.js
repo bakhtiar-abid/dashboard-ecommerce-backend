@@ -6,7 +6,7 @@ const { MongoClient } = require("mongodb");
 
 const ObjectId = require("mongodb").ObjectId;
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 // middleware
 
@@ -28,6 +28,7 @@ async function run() {
       const database = client.db("ecommerceDashboard");
       const productCollection = database.collection("productList");
       const ordersCollection = database.collection("orderList");
+      const usersCollection = database.collection("users");
 
       //GET PRODUCTS API
       app.get("/products", async (req, res) => {
@@ -51,6 +52,21 @@ async function run() {
          const result = await ordersCollection.insertOne(orderData);
          res.json(result);
       });
+
+      //Getting User Information
+      app.put("/users", async (req, res) => {
+         const user = req.body;
+         const filter = { email: user.email };
+         const options = { upsert: true };
+         const updateDoc = { $set: user };
+         const result = await usersCollection.updateOne(
+            filter,
+            updateDoc,
+            options
+         );
+         res.json(result);
+      });
+
    } finally {
       // await client.close();
    }
