@@ -26,7 +26,7 @@ async function run() {
       await client.connect();
       console.log("Connected to MongoDB");
       const database = client.db("ecommerceDashboard");
-      const productCollection = database.collection("products");
+      const productCollection = database.collection("productList");
 
       //GET PRODUCTS API
       app.get("/products", async (req, res) => {
@@ -35,6 +35,13 @@ async function run() {
          res.json(result);
       });
 
+      //GET Single Item API
+      app.get("/productDetail/:id", async (req, res) => {
+         const id = req.params.id;
+         const query = { _id: ObjectId(id) };
+         const vehicle = await productCollection.findOne(query);
+         res.json(vehicle);
+      });
    } finally {
       // await client.close();
    }
