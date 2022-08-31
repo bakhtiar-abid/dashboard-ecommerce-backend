@@ -27,6 +27,7 @@ async function run() {
       console.log("Connected to MongoDB");
       const database = client.db("ecommerceDashboard");
       const productCollection = database.collection("productList");
+      const ordersCollection = database.collection("orderList");
 
       //GET PRODUCTS API
       app.get("/products", async (req, res) => {
@@ -41,6 +42,14 @@ async function run() {
          const query = { _id: ObjectId(id) };
          const productDetail = await productCollection.findOne(query);
          res.json(productDetail);
+      });
+
+      //POST PLACE ORDER API
+      app.post("/placeorder", async (req, res) => {
+         const orderData = req.body;
+         console.log("orderData", orderData);
+         const result = await ordersCollection.insertOne(orderData);
+         res.json(result);
       });
    } finally {
       // await client.close();
