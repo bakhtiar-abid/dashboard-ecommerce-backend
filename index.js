@@ -96,18 +96,50 @@ async function run() {
       });
 
       //GET USERs INFO API
-       app.get("/users", async (req, res) => {
-          const cursor = usersCollection.find({});
-          const result = await cursor.toArray();
-          res.json(result);
-       });
+      app.get("/users", async (req, res) => {
+         const cursor = usersCollection.find({});
+         const result = await cursor.toArray();
+         res.json(result);
+      });
 
       //GET ORDERS INFO API
-       app.get("/orders", async (req, res) => {
-          const cursor = ordersCollection.find({});
-          const result = await cursor.toArray();
-          res.json(result);
-       });
+      app.get("/orders", async (req, res) => {
+         const cursor = ordersCollection.find({});
+         const result = await cursor.toArray();
+         res.json(result);
+      });
+
+      //UPDATE STATUS API
+      app.put("/orders/:id", async (req, res) => {
+         const id = req.params.id;
+         const updatedStatus = req.body;
+         console.log(updatedStatus);
+         const filter = { _id: ObjectId(id) };
+         const options = { upsert: true };
+         const updateDoc = {
+            $set: {
+               status: "shipped",
+            },
+         };
+         const result = await ordersCollection.updateOne(
+            filter,
+            updateDoc,
+            options
+         );
+         console.log("updating", id);
+         res.json(result);
+      });
+
+      /* Delete Order API */
+
+      
+      app.delete("/orders/:id", async (req, res) => {
+         const id = req.params.id;
+         const query = { _id: ObjectId(id) };
+         const result = await ordersCollection.deleteOne(query);
+         res.json(result);
+      });
+      
    } finally {
       // await client.close();
    }
