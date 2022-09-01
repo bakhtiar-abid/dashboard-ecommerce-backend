@@ -1,13 +1,17 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { MongoClient } = require("mongodb");
 
 const ObjectId = require("mongodb").ObjectId;
 
 const port = process.env.PORT || 5001;
-
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+admin.initializeApp({
+   credential: admin.credential.cert(serviceAccount),
+});
 // middleware
 
 app.use(cors());
@@ -19,7 +23,17 @@ const client = new MongoClient(uri, {
    useUnifiedTopology: true,
 });
 
-console.log(uri);
+async function verifyToken(req, res, next) {
+   if (req.headers?.authorization?.startsWith("Bearer ")) {
+      const token = req.headers.authorization.split(" ")[1];
+
+      try {
+         const decodedUser = await admin.auth().verifyIdToken(token);
+         req.decodedEmail = decodedUser.email;
+      } catch {}
+   }
+   next();
+}
 
 async function run() {
    try {
@@ -67,6 +81,17 @@ async function run() {
          res.json(result);
       });
 
+      //GET ADMIN API
+      app.get("/users/:email", async (req, res) => {
+         const email = req.params.email;
+         const query = { email: email };
+         const user = await usersCollection.findOne(query);
+         let isAdmin = false;
+         if (user?.role === "admin") {
+            isAdmin = true;
+         }
+         res.json({ admin: isAdmin });
+      });
    } finally {
       // await client.close();
    }
