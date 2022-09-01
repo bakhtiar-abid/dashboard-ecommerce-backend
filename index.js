@@ -95,6 +95,18 @@ async function run() {
          res.json({ admin: isAdmin });
       });
 
+      //GET Editor API
+      app.get("/editor/:email", async (req, res) => {
+         const email = req.params.email;
+         const query = { email: email };
+         const user = await usersCollection.findOne(query);
+         let isEditor = false;
+         if (user?.role === "editor") {
+            isEditor = true;
+         }
+         res.json({ editor: isEditor });
+      });
+
       //GET USERs INFO API
       app.get("/users", async (req, res) => {
          const cursor = usersCollection.find({});
@@ -130,6 +142,30 @@ async function run() {
          res.json(result);
       });
 
+      //Editor API
+      app.put("/users/editor", verifyToken, async (req, res) => {
+         const user = req.body;
+         console.log(user);
+         const requester = req.decodedEmail;
+         if (requester) {
+            const requesterAccount = await usersCollection.findOne({
+               email: requester,
+            });
+            if (requesterAccount.role === "editor") {
+               const filter = { email: user.email };
+               const updateDoc = { $set: { role: "editor" } };
+               const result = await usersCollection.updateOne(
+                  filter,
+                  updateDoc
+               );
+               res.json(result);
+            }
+         } else {
+            res.status(403).json({
+               message: "you do not have access to make admin",
+            });
+         }
+      });
       //ADMIN API
       app.put("/users/admin", verifyToken, async (req, res) => {
          const user = req.body;
