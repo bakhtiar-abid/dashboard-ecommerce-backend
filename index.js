@@ -142,7 +142,8 @@ async function run() {
          res.json(result);
       });
 
-      //Editor API
+      
+      //ADMIN API
       app.put("/users/editor", verifyToken, async (req, res) => {
          const user = req.body;
          console.log(user);
@@ -151,7 +152,7 @@ async function run() {
             const requesterAccount = await usersCollection.findOne({
                email: requester,
             });
-            if (requesterAccount.role === "editor") {
+            if (requesterAccount.role === "admin") {
                const filter = { email: user.email };
                const updateDoc = { $set: { role: "editor" } };
                const result = await usersCollection.updateOne(
@@ -159,14 +160,14 @@ async function run() {
                   updateDoc
                );
                res.json(result);
-            }
+            } 
          } else {
             res.status(403).json({
                message: "you do not have access to make admin",
             });
          }
       });
-      //ADMIN API
+      /* Admin API */
       app.put("/users/admin", verifyToken, async (req, res) => {
          const user = req.body;
          console.log(user);
@@ -183,7 +184,7 @@ async function run() {
                   updateDoc
                );
                res.json(result);
-            }
+            } 
          } else {
             res.status(403).json({
                message: "you do not have access to make admin",
