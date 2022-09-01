@@ -94,6 +94,13 @@ async function run() {
          }
          res.json({ admin: isAdmin });
       });
+
+      //GET USERs INFO API
+       app.get("/users", async (req, res) => {
+          const cursor = usersCollection.find({});
+          const result = await cursor.toArray();
+          res.json(result);
+       });
    } finally {
       // await client.close();
    }
