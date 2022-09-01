@@ -104,7 +104,7 @@ async function run() {
 
       //GET ORDERS INFO API
        app.get("/orders", async (req, res) => {
-          const cursor = productCollection.find({});
+          const cursor = ordersCollection.find({});
           const result = await cursor.toArray();
           res.json(result);
        });
