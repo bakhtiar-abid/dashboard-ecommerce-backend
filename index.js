@@ -101,6 +101,13 @@ async function run() {
           const result = await cursor.toArray();
           res.json(result);
        });
+
+      //GET ORDERS INFO API
+       app.get("/orders", async (req, res) => {
+          const cursor = productCollection.find({});
+          const result = await cursor.toArray();
+          res.json(result);
+       });
    } finally {
       // await client.close();
    }
