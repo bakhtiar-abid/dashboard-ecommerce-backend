@@ -130,16 +130,39 @@ async function run() {
          res.json(result);
       });
 
+      //ADMIN API
+      app.put("/users/admin", verifyToken, async (req, res) => {
+         const user = req.body;
+         console.log(user);
+         const requester = req.decodedEmail;
+         if (requester) {
+            const requesterAccount = await usersCollection.findOne({
+               email: requester,
+            });
+            if (requesterAccount.role === "admin") {
+               const filter = { email: user.email };
+               const updateDoc = { $set: { role: "admin" } };
+               const result = await usersCollection.updateOne(
+                  filter,
+                  updateDoc
+               );
+               res.json(result);
+            }
+         } else {
+            res.status(403).json({
+               message: "you do not have access to make admin",
+            });
+         }
+      });
+
       /* Delete Order API */
 
-      
       app.delete("/orders/:id", async (req, res) => {
          const id = req.params.id;
          const query = { _id: ObjectId(id) };
          const result = await ordersCollection.deleteOne(query);
          res.json(result);
       });
-      
    } finally {
       // await client.close();
    }
