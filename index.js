@@ -129,6 +129,17 @@ async function run() {
          res.json(result);
       });
 
+      // GET USERS ORDER API
+      app.get("/orders/:email", async (req, res) => {
+         const email = req.params.email;
+
+         const query = { email: email };
+
+         const cursor = ordersCollection.find(query);
+         const userOrder = await cursor.toArray();
+         res.json(userOrder);
+      });
+
       //UPDATE STATUS API
       app.put("/orders/:id", async (req, res) => {
          const id = req.params.id;
@@ -150,8 +161,7 @@ async function run() {
          res.json(result);
       });
 
-      
-      //ADMIN API
+      // MAKE EDITOR API
       app.put("/users/editor", verifyToken, async (req, res) => {
          const user = req.body;
          console.log(user);
@@ -168,7 +178,7 @@ async function run() {
                   updateDoc
                );
                res.json(result);
-            } 
+            }
          } else {
             res.status(403).json({
                message: "you do not have access to make admin",
@@ -192,7 +202,7 @@ async function run() {
                   updateDoc
                );
                res.json(result);
-            } 
+            }
          } else {
             res.status(403).json({
                message: "you do not have access to make admin",
@@ -206,6 +216,14 @@ async function run() {
          const id = req.params.id;
          const query = { _id: ObjectId(id) };
          const result = await ordersCollection.deleteOne(query);
+         res.json(result);
+      });
+
+      /* Delete Product API */
+      app.delete("/product/:id", async (req, res) => {
+         const id = req.params.id;
+         const query = { _id: ObjectId(id) };
+         const result = await productCollection.deleteOne(query);
          res.json(result);
       });
    } finally {
