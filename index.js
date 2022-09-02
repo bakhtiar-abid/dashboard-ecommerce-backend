@@ -69,6 +69,14 @@ async function run() {
          res.json(result);
       });
 
+      //POST NEW PRODUCT API
+      app.post("/newProduct", async (req, res) => {
+         const productData = req.body;
+         console.log("orderData", productData);
+         const result = await productCollection.insertOne(productData);
+         res.json(result);
+      });
+
       //PUT User Information
       app.put("/users", async (req, res) => {
          const user = req.body;
