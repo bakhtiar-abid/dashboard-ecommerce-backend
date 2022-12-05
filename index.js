@@ -143,6 +143,7 @@ async function run() {
 
       //UPDATE STATUS API
       app.put("/orders/:id", async (req, res) => {
+         
          const id = req.params.id;
          const updatedStatus = req.body;
          console.log(updatedStatus);
