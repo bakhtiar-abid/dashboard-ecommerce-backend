@@ -31,6 +31,7 @@ async function verifyToken(req, res, next) {
 
       try {
          const decodedUser = await admin.auth().verifyIdToken(token);
+         console.log(decodedUser);
          req.decodedEmail = decodedUser.email;
       } catch {}
    }
