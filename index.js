@@ -46,10 +46,16 @@ async function run() {
       const productCollection = database.collection("productList");
       const ordersCollection = database.collection("orderList");
       const usersCollection = database.collection("users");
+      const addInfo = database.collection("info");
 
       //GET PRODUCTS API
       app.get("/products", async (req, res) => {
          const cursor = productCollection.find({});
+         const result = await cursor.toArray();
+         res.json(result);
+      });
+      app.get("/products/1", async (req, res) => {
+         const cursor = addInfo.find({});
          const result = await cursor.toArray();
          res.json(result);
       });
@@ -67,6 +73,13 @@ async function run() {
          const orderData = req.body;
          console.log("orderData", orderData);
          const result = await ordersCollection.insertOne(orderData);
+         res.json(result);
+      });
+
+      app.post("/placeorder/1", async (req, res) => {
+         const orderData = req.body;
+         console.log("orderData", orderData);
+         const result = await addInfo.insertOne(orderData);
          res.json(result);
       });
 
