@@ -1,0 +1,39 @@
+version: '3.8'
+
+services: 
+    # MongoDB services
+    mongodb:
+        container_name: db_container
+        image: mongo:latest
+        restart: always
+        env_file: ./.env
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=$DB_USER
+            - MONGO_INITDB_ROOT_PASSWORD=$DB_PASS
+        volumes:
+          - mongodb:/data/db
+
+#Node API service
+    api:
+      depends_on:
+      - mongodb
+      build: ./
+      restart: unless-stopped
+      env_file: ./.env
+      ports:
+        - 5001:5001
+      environment:
+      - MDB_HOST=mongodb
+      - MDB_USER=$DB_USER
+      - MDB_PASSWORD=$DB_PASS
+      - MDB_FIREBASE=$FIREBASE_SERVICE_ACCOUNT
+      stdin_open: true
+      tty: true
+      
+       
+
+volumes:
+  mongodb: {}
+
+
+

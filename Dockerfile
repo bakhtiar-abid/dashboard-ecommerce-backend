@@ -1,11 +1,11 @@
-FROM node:slim
+FROM node:alpine
 
 WORKDIR /usr/src/dashboard-backend
 
-COPY ./ ./
+COPY . .
 
 RUN npm install
 
 EXPOSE 5001
 
-CMD [ "node", "index.js" ]
+CMD [ "npm", "start" ]
