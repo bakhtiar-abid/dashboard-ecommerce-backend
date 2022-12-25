@@ -10,7 +10,8 @@ const ObjectId = require("mongodb").ObjectId;
 
 const port = process.env.PORT || 5001;
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+const serviceAccount = JSON.parse(MDB_FIREBASE);
+console.log(serviceAccount)
 admin.initializeApp({
    credential: admin.credential.cert(serviceAccount),
 });
@@ -19,7 +20,7 @@ admin.initializeApp({
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xztta.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${MDB_USER}:${MDB_PASSWORD}@cluster0.xztta.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
    useNewUrlParser: true,
    useUnifiedTopology: true,
